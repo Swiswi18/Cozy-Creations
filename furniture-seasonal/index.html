@@ -5,49 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cozy Creations</title>
   <link rel="stylesheet" href="css/style.css">
-  <script type="module" src="./js/themeHandler.js" defer></script>
-  <script type="module">
-    import { auth } from "./firebase/firebase.js";
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    const loginBtn = document.getElementById("loginBtn");
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        logoutBtn.style.display = "inline-block";
-        loginBtn.style.display = "none";
-        logoutBtn.addEventListener("click", () => {
-          signOut(auth).then(() => {
-            window.location.href = "./auth/login.html";
-          });
-        });
-      } else {
-        logoutBtn.style.display = "none";
-        loginBtn.style.display = "inline-block";
-      }
-    });
-  </script>
-
 </head>
 
 <body class="spring-theme">
   <!-- Navbar -->
-  <header>
-    <h1>Cozy Creations</h1>
-    <nav>
-      <select id="seasonSelector">
-        <option value="spring">Spring</option>
-        <option value="summer">Summer</option>
-        <option value="autumn">Autumn</option>
-        <option value="winter">Winter</option>
-      </select>
-
-      <button id="modeToggle">🌙 Dark Mode</button>
-      <button id="logoutBtn" style="display:none;">Logout</button>
-      <button id="loginBtn" style="display:none;" onclick="window.location.href='./auth/login.html'">Login</button>
-    </nav>
-  </header>
+  <div id="navbar"></div>
 
   <!-- Hero -->
   <section class="hero">
@@ -67,6 +29,93 @@
     <p>© 2025 Cozy Creations. All rights reserved.</p>
   </footer>
 
-  <script src="js/themeHandler.js"></script>
+  <!-- Main Script -->
+  <script type="module">
+    // Load navbar HTML
+    fetch('./components/navbar.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('navbar').innerHTML = data;
+
+        // Delay DOM access until navbar is fully parsed
+        requestAnimationFrame(() => {
+          const logoutBtn = document.getElementById("logoutBtn");
+          const profileMenu = document.getElementById("profileMenu");
+          const profileToggle = document.getElementById("profileToggle");
+          const dropdownContent = document.getElementById("dropdownContent");
+          const loginBtn = document.getElementById("loginBtn");
+          const modeToggle = document.getElementById("modeToggle");
+          const seasonSelector = document.getElementById("seasonSelector");
+
+          if (!logoutBtn || !loginBtn || !profileToggle || !dropdownContent || !modeToggle || !profileMenu) {
+            console.error("One or more navbar elements not found.");
+            return;
+          }
+
+          // Firebase auth setup
+          import("./firebase/firebase.js").then(({ auth }) => {
+            import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(({ onAuthStateChanged, signOut }) => {
+              onAuthStateChanged(auth, (user) => {
+                if (user) {
+                  logoutBtn.style.display = "block";
+                  loginBtn.style.display = "none";
+                  profileMenu.style.display = "block";
+
+                  logoutBtn.addEventListener("click", () => {
+                    signOut(auth).then(() => {
+                      window.location.href = "./auth/login.html";
+                    });
+                  });
+
+                } else {
+                  logoutBtn.style.display = "none";
+                  loginBtn.style.display = "inline-block";
+                  profileMenu.style.display = "none";
+
+                  loginBtn.addEventListener("click", () => {
+                    window.location.href = "./auth/login.html";
+                  });
+                }
+              });
+            });
+          });
+
+          // Theme toggle
+          modeToggle.addEventListener("click", () => {
+            const body = document.body;
+            if (body.classList.contains("dark-theme")) {
+              body.classList.remove("dark-theme");
+              modeToggle.textContent = "🌙 Dark Mode";
+            } else {
+              body.classList.add("dark-theme");
+              modeToggle.textContent = "☀️ Light Mode";
+            }
+          });
+
+          // Toggle dropdown visibility
+          profileToggle.addEventListener("click", () => {
+            dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+          });
+
+          // Close dropdown if clicked outside
+          document.addEventListener("click", (e) => {
+            if (!profileMenu.contains(e.target)) {
+              dropdownContent.style.display = "none";
+            }
+          });
+
+          // Season selector (if applicable)
+          if (seasonSelector) {
+            seasonSelector.addEventListener("change", (e) => {
+              document.body.className = `${e.target.value}-theme`;
+            });
+          }
+        });
+      })
+
+      .catch(error => {
+        console.error("Failed to load navbar:", error);
+      });
+  </script>
 </body>
 </html>
