@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="../css/navbar.css">
+
+<nav class="navbar">
+  <div class="logo">
+    <a href="/">Cozy Creations</a>
+  </div>
+
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/collections.html">Collections</a>
+    <a href="/customize.html">Customize</a>
+    <button id="loginBtn" style="display: none;">Login</button>
+
+    <div class="profile-dropdown" id="profileMenu" style="display: none; position: relative;">
+      <button class="profile-btn" id="profileToggle">👤 Profile ⌄</button>
+      <div class="dropdown-content" id="dropdownContent" style="display: none; position: absolute; right: 0; background: white; border: 1px solid #ccc; min-width: 150px; z-index: 999;">
+        <button id="modeToggle" class="dropdown-item">🌙 Dark Mode</button>
+        <button id="logoutBtn" class="dropdown-item">🔓 Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>
