@@ -4,14 +4,36 @@
   <meta charset="UTF-8" />
   <title>Register | Cozy Creations</title>
   <script type="module" src="./register.js" defer></script>
+  <link rel="stylesheet" href="css/register.css" />
+
 </head>
 <body>
+  <div id="successPopup" style="display:none; position: fixed; top: 20px; background: #d4edda; color: #155724; padding: 1rem 2rem; border: 1px solid #c3e6cb; border-radius: 8px; z-index: 1000;">
+    Registration successful!
+  </div>
+
   <h2>Register</h2>
+
   <form id="registerForm">
     <input type="email" id="email" placeholder="Email" required /><br />
     <input type="password" id="password" placeholder="Password" required /><br />
+    
+    <label for="profileImage">Profile Image:</label>
+    <input type="file" id="profileImage" accept="image/*" /><br />
+
+    <label for="theme">Preferred Theme:</label>
+    <select id="theme">
+      <option value="light" selected>Light</option>
+      <option value="dark">Dark</option>
+    </select><br />
+
     <button type="submit">Register</button>
   </form>
+
+  <hr />
+
+  <button id="googleSignUpBtn">Sign up with Google</button>
+
   <p>Already have an account? <a href="login.html">Login</a></p>
 </body>
 </html>
